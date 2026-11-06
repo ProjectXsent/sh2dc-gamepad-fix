@@ -35,9 +35,9 @@ static const int kNumButtons = 32;     // DI buttons exposed by the virtual devi
 
 struct BtnSrc { const char* key; SDL_GamepadButton sdl; int def; };
 static const BtnSrc kBtnSrc[] = {
-    { "A",             SDL_GAMEPAD_BUTTON_SOUTH,          0  },
-    { "B",             SDL_GAMEPAD_BUTTON_EAST,           1  },
-    { "X",             SDL_GAMEPAD_BUTTON_WEST,           2  },
+    { "A",             SDL_GAMEPAD_BUTTON_SOUTH,          1  },
+    { "B",             SDL_GAMEPAD_BUTTON_EAST,           2  },
+    { "X",             SDL_GAMEPAD_BUTTON_WEST,           0  },
     { "Y",             SDL_GAMEPAD_BUTTON_NORTH,          3  },
     { "LeftShoulder",  SDL_GAMEPAD_BUTTON_LEFT_SHOULDER,  4  },
     { "RightShoulder", SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER, 5  },
@@ -45,17 +45,17 @@ static const BtnSrc kBtnSrc[] = {
     { "Start",         SDL_GAMEPAD_BUTTON_START,          7  },
     { "LeftStick",     SDL_GAMEPAD_BUTTON_LEFT_STICK,     8  },
     { "RightStick",    SDL_GAMEPAD_BUTTON_RIGHT_STICK,    9  },
-    { "DPadUp",        SDL_GAMEPAD_BUTTON_DPAD_UP,        12 },
-    { "DPadDown",      SDL_GAMEPAD_BUTTON_DPAD_DOWN,      13 },
-    { "DPadLeft",      SDL_GAMEPAD_BUTTON_DPAD_LEFT,      14 },
-    { "DPadRight",     SDL_GAMEPAD_BUTTON_DPAD_RIGHT,     15 },
-    { "Guide",         SDL_GAMEPAD_BUTTON_GUIDE,          16 },
-    { "Misc1",         SDL_GAMEPAD_BUTTON_MISC1,          -1 },
-    { "Touchpad",      SDL_GAMEPAD_BUTTON_TOUCHPAD,       -1 },
-    { "LeftPaddle1",   SDL_GAMEPAD_BUTTON_LEFT_PADDLE1,   -1 },
-    { "RightPaddle1",  SDL_GAMEPAD_BUTTON_RIGHT_PADDLE1,  -1 },
-    { "LeftPaddle2",   SDL_GAMEPAD_BUTTON_LEFT_PADDLE2,   -1 },
-    { "RightPaddle2",  SDL_GAMEPAD_BUTTON_RIGHT_PADDLE2,  -1 },
+    { "DPadUp",        SDL_GAMEPAD_BUTTON_DPAD_UP,        -1 },
+    { "DPadDown",      SDL_GAMEPAD_BUTTON_DPAD_DOWN,      -1 },
+    { "DPadLeft",      SDL_GAMEPAD_BUTTON_DPAD_LEFT,      -1 },
+    { "DPadRight",     SDL_GAMEPAD_BUTTON_DPAD_RIGHT,     -1 },
+    { "Guide",         SDL_GAMEPAD_BUTTON_GUIDE,          12 },
+    { "Misc1",         SDL_GAMEPAD_BUTTON_MISC1,          13 },
+    { "Touchpad",      SDL_GAMEPAD_BUTTON_TOUCHPAD,       13 },
+    { "LeftPaddle1",   SDL_GAMEPAD_BUTTON_LEFT_PADDLE1,   14 },
+    { "RightPaddle1",  SDL_GAMEPAD_BUTTON_RIGHT_PADDLE1,  15 },
+    { "LeftPaddle2",   SDL_GAMEPAD_BUTTON_LEFT_PADDLE2,   16 },
+    { "RightPaddle2",  SDL_GAMEPAD_BUTTON_RIGHT_PADDLE2,  17 },
 };
 static const int kNumBtnSrc = (int)(sizeof(kBtnSrc) / sizeof(kBtnSrc[0]));
 
@@ -158,7 +158,7 @@ R"(; sh2input.ini  -- changes are picked up automatically while the game runs.
 
 [General]
 ; Write sh2input.log (useful for troubleshooting)
-Logging=1
+Logging=0
 ; Hide the physical DirectInput controllers so the game only sees the SDL pad
 HideRealPads=1
 ; Report the virtual pad even when no controller is plugged in (allows hot-plugging)
@@ -172,30 +172,29 @@ MappingsFile=gamecontrollerdb.txt
 [Buttons]
 ; Value = DirectInput button number the game sees (0-31), or -1 to disable.
 ; Several inputs may be mapped to the same number.
-A=0
-B=1
-X=2
+A=1
+B=2
+X=0
 Y=3
 LeftShoulder=4
 RightShoulder=5
-Back=6
-Start=7
-LeftStick=8
-RightStick=9
-DPadUp=12
-DPadDown=13
-DPadLeft=14
-DPadRight=15
-Guide=16
-Misc1=-1
-Touchpad=-1
-LeftPaddle1=-1
-RightPaddle1=-1
-LeftPaddle2=-1
-RightPaddle2=-1
-; Triggers pressed past TriggerThreshold act as these buttons
-LeftTriggerButton=10
-RightTriggerButton=11
+LeftTriggerButton=6
+RightTriggerButton=7
+Back=8
+Start=9
+LeftStick=10
+RightStick=11
+DPadUp=-1
+DPadDown=-1
+DPadLeft=-1
+DPadRight=-1
+Guide=12
+Misc1=13
+Touchpad=13
+RightPaddle1=14
+LeftPaddle1=15
+RightPaddle2=16
+LeftPaddle2=17
 
 [DPad]
 ; 1 = also report the D-pad as a POV hat (buttons above still apply)
@@ -225,14 +224,14 @@ InvertRightY=0
 ; Which DirectInput axis each input is sent to: X, Y, Z, Rx, Ry, Rz or None
 LeftStickX=X
 LeftStickY=Y
-RightStickX=Rx
-RightStickY=Ry
+RightStickX=Z
+RightStickY=Rz
 ; 1 = one combined trigger axis (LT positive, RT negative, like Xbox DirectInput)
 ; 0 = separate axes (rest position = minimum)
-CombinedTriggers=1
-TriggerAxis=Z
-LeftTriggerAxis=Z
-RightTriggerAxis=Rz
+CombinedTriggers=0
+TriggerAxis=None
+LeftTriggerAxis=None
+RightTriggerAxis=None
 
 [Rumble]
 Enabled=1

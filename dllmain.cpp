@@ -1018,7 +1018,19 @@ public:
             *pp = new VirtualPad();
             return DI_OK;
         }
-        return m_real->CreateDevice(g, pp, outer);
+        HRESULT hr = m_real->CreateDevice(g, pp, outer);
+        if (SUCCEEDED(hr) && g_cfg.hideReal && pp && *pp) {
+            DIDEVICEINSTANCEA di{}; di.dwSize = sizeof(di);
+            if (SUCCEEDED((*pp)->GetDeviceInfo(&di))) {
+                BYTE t = LOBYTE(di.dwDevType);
+                if (t != DI8DEVTYPE_KEYBOARD && t != DI8DEVTYPE_MOUSE) {
+                    Log("Blocked real device %s", di.tszProductName);
+                    (*pp)->Release(); *pp = nullptr;
+                    return DIERR_DEVICENOTREG;
+                }
+            }
+        }
+        return hr;
     }
 
     HRESULT STDMETHODCALLTYPE EnumDevices(DWORD devType, LPDIENUMDEVICESCALLBACKA cb, LPVOID ref, DWORD flags) override
@@ -1052,7 +1064,10 @@ public:
     HRESULT STDMETHODCALLTYPE Initialize(HINSTANCE h, DWORD v) override { return m_real->Initialize(h, v); }
     HRESULT STDMETHODCALLTYPE FindDevice(REFGUID a, LPCSTR b, LPGUID c) override { return m_real->FindDevice(a, b, c); }
     HRESULT STDMETHODCALLTYPE EnumDevicesBySemantics(LPCSTR a, LPDIACTIONFORMATA b, LPDIENUMDEVICESBYSEMANTICSCBA c, LPVOID d, DWORD e) override
-    { return m_real->EnumDevicesBySemantics(a, b, c, d, e); }
+    {
+        Log("EnumDevicesBySemantics (blocked)");
+        return g_cfg.hideReal ? DI_OK : m_real->EnumDevicesBySemantics(a, b, c, d, e);
+    }
     HRESULT STDMETHODCALLTYPE ConfigureDevices(LPDICONFIGUREDEVICESCALLBACK a, LPDICONFIGUREDEVICESPARAMSA b, DWORD c, LPVOID d) override
     { return m_real->ConfigureDevices(a, b, c, d); }
 };
